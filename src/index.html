@@ -9,13 +9,11 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta http-equiv="x-ua-compatible" content="IE=Edge">
 
-  <script type="module" src="/build/app.esm.js"></script>
-  <script nomodule src="/build/app.js"></script>
-  <link href="/build/app.css" rel="stylesheet">
+  <link href="app.css" rel="stylesheet">
 
-  <link rel="apple-touch-icon" href="/assets/icon/icon.png">
-  <link rel="icon" type="image/x-icon" href="/assets/icon/favicon.ico">
-  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="assets/icon/icon.png">
+  <link rel="icon" type="image/x-icon" href="assets/icon/favicon.ico">
+  <link rel="manifest" href="manifest.json">
 </head>
 <body>
   <header>
@@ -23,19 +21,23 @@
   </header>
 
   <main>
-    <section id="intro" class="section">
+    <section id="intro-section" class="section">
       This is the intro.
 
       Choose your level.
     </section>
 
-    <section id="puzzle" class="section section--hidden">
-      <xword-puzzle></xword-puzzle>
+    <section id="puzzle-section" class="section">
+      <xword-puzzle id="puzzle" height="6" width="10">
+        <!-- Pass in the props that we need -->
+      </xword-puzzle>
     </section>
   </main>
 
   <footer>
-    <sup>&copy;</sup> 2019 Miles &amp; Holli Rausch
+    <small>&copy; 2019 Miles &amp; Holli Rausch</small>
   </footer>
+
+  <script type="module" src="./app.js" async></script>
 </body>
 </html>
