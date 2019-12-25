@@ -1,8 +1,8 @@
-import Clue from './Clue';
+import Clue from './Clue.js';
 
 export const ClueDirection = {
   Across: 'across',
-  Down: 'down'
+  Down: 'down',
 };
 
 export default class CluePosition {

@@ -4,8 +4,8 @@
   "version": "0.0.1",
   "description": "Can you solve our Rauschword puzzles?",
   "scripts": {
-    "start": "es-dev-server --app-index src/index.html --node-resolve --watch --open",
-    "start:compatibility": "es-dev-server --compatibility all --app-index src/index.html --node-resolve --watch --open",
+    "start": "es-dev-server --app-index index.html --node-resolve --watch --open",
+    "start:compatibility": "es-dev-server --compatibility all --app-index index.html --node-resolve --watch --open",
     "lint:eslint": "eslint --ext .js,.html . --ignore-path .gitignore",
     "format:eslint": "eslint --ext .js,.html . --fix --ignore-path .gitignore",
     "lint:prettier": "prettier \"**/*.js\" --check --ignore-path .gitignore",

@@ -14,6 +14,6 @@ export default class Clue {
       return false;
     }
 
-    return possibleAnswer === flatAnswer;
+    return possibleAnswer === this.answer;
   }
 }
