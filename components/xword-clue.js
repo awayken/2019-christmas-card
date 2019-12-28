@@ -1,84 +1,69 @@
-class XwordClue extends HTMLElement {
-  static get observedAttributes() {
-    return ['column', 'invalid', 'isDown', 'length', 'row', 'squareSize', 'value'];
-  }
+import { LitElement, html } from 'lit-element';
 
-  get column() {
-    return this.getAttribute('column') || 1;
-  }
-
-  set column(val) {
-    this.setAttribute('column', val);
-  }
-
-  get invalid() {
-    return this.getAttribute('invalid') || false;
-  }
-
-  set invalid(val) {
-    this.setAttribute('invalid', val);
-  }
-
-  get isDown() {
-    return this.getAttribute('isDown') || false;
-  }
-
-  set isDown(val) {
-    this.setAttribute('isDown', val);
-  }
-
-  get length() {
-    return this.getAttribute('length');
-  }
-
-  set length(val) {
-    this.setAttribute('length', val);
-  }
-
-  get row() {
-    return this.getAttribute('row') || 1;
-  }
-
-  set row(val) {
-    this.setAttribute('row', val);
-  }
-
-  get squareSize() {
-    return this.getAttribute('squareSize') || 40;
-  }
-
-  set squareSize(val) {
-    this.setAttribute('squareSize', val);
-  }
-
-  get value() {
-    return this.getAttribute('value');
-  }
-
-  set value(val) {
-    this.setAttribute('value', val);
-  }
-
-  attributeChangedCallback(attrName, oldVal, newVal) {
-    if (oldVal !== newVal) {
-      this.render();
-    }
+class XwordClue extends LitElement {
+  static get properties() {
+    return {
+      column: { type: Number },
+      id: { type: String },
+      invalid: { type: Boolean },
+      down: { type: Boolean },
+      length: { type: Number },
+      row: { type: Number },
+      squareSize: { type: Number },
+      value: { type: String },
+    };
   }
 
   constructor() {
     super();
 
-    this.squares = [];
+    this.column = 1;
+    this.invalid = false;
+    this.down = false;
+    this.row = 1;
+    this.squareSize = 40;
+    this.value = '';
 
-    if (!this.squareUpdate) {
-      this.squareUpdate = function noop() {};
-    }
-
-    this.host = this.attachShadow({ mode: 'open' });
+    this.addEventListener('focus', this.handleFocus);
   }
 
-  connectedCallback() {
-    this.render();
+  handleUpdateSquare(e) {
+    const allowedKeys = /[a-zA-Z]/;
+    const { target, key } = e;
+    const i = 0;
+
+    console.log(e, key, target, allowedKeys.test(key));
+
+    if (allowedKeys.test(key)) {
+      const event = new CustomEvent('update-square', {
+        detail: {
+          squareIndex: i,
+          squareValue: key,
+        },
+      });
+
+      this.dispatchEvent(event);
+
+      this.nextSquare(target, i);
+    }
+  }
+
+  handleFocus() {
+    const firstInput = this.shadowRoot.querySelector('input');
+    console.log('handleFocus', firstInput);
+    if (firstInput) {
+      firstInput.focus();
+    }
+  }
+
+  handleClueFocus() {
+    const event = new CustomEvent('focusClue', {
+      detail: {
+        clueId: this.id,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
   nextSquare(target, currentIndex) {
@@ -92,8 +77,7 @@ class XwordClue extends HTMLElement {
       nextIndex = 0;
     }
 
-    this.squares[currentIndex].value = target.value;
-    this.squares[nextIndex].focus();
+    // this.squares[nextIndex].focus();
   }
 
   static getStyles() {
@@ -256,32 +240,14 @@ class XwordClue extends HTMLElement {
   }
 
   getSquares() {
-    this.squares = [];
+    const squares = [];
     const values = this.value.split('') || [];
 
     for (let i = 0; i < this.length; i += 1) {
-      this.squares.push(`
-        <input
-          class="clue__box"
-          maxlength="1"
-          value="${values[i] || ''}"
-        />
-      `);
-      /*
-onKeyUp={e => {
-  if (this.squareUpdate && e.key.length === 1) {
-    this.squareUpdate({
-      squareIndex: i,
-      squareValue: e.key,
-    });
-  }
-
-  this.nextSquare(e.currentTarget, i);
-}}
-*/
+      squares[i] = values[i] || '';
     }
 
-    return this.squares.join('');
+    return squares;
   }
 
   render() {
@@ -295,28 +261,39 @@ onKeyUp={e => {
       font-size: ${fontSize}em
     `;
 
-    if (Number(this.length) !== 0) {
-      let className = 'clue';
+    let className = 'clue';
 
-      if (this.isDown) {
-        className += ' clue--down';
-      } else {
-        className += ' clue--across';
-      }
-
-      if (this.invalid) {
-        className += ' clue--invalid';
-      }
-
-      const tmpl = `
-        <style>${XwordClue.getStyles()}</style>
-        <div class="${className}" style="${styleRules}">
-        ${this.getSquares()}
-        </div>
-      `;
-
-      this.host.innerHTML = tmpl;
+    if (this.down) {
+      className += ' clue--down';
+    } else {
+      className += ' clue--across';
     }
+
+    if (this.invalid) {
+      className += ' clue--invalid';
+    }
+
+    const squares = this.getSquares();
+
+    return html`
+      <style>
+        ${XwordClue.getStyles()}
+      </style>
+      <div class="${className}" style="${styleRules}">
+        ${squares.map(
+          square =>
+            html`
+              <input
+                class="clue__box"
+                @focus="${this.handleClueFocus}"
+                @keyup="${this.handleUpdateSquare}"
+                maxlength="1"
+                .value="${square}"
+              />
+            `,
+        )}
+      </div>
+    `;
   }
 }
 

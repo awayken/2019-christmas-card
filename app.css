@@ -90,6 +90,10 @@ body {
   font-family: var(--base-font);
 }
 
+xword-puzzle {
+  text-align: center;
+}
+
 .section {
   display: block;
 }

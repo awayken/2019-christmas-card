@@ -1,47 +1,41 @@
+import { LitElement, html } from 'lit-element';
+
 import { ClueDirection } from '../models/CluePosition.js';
 
-class XwordPuzzle extends HTMLElement {
-  static get observedAttributes() {
-    return ['height', 'width'];
-  }
-
-  get height() {
-    return this.getAttribute('height') || 50;
-  }
-
-  set height(val) {
-    this.setAttribute('height', val);
-  }
-
-  get width() {
-    return this.getAttribute('width') || 50;
-  }
-
-  set width(val) {
-    this.setAttribute('width', val);
-  }
-
-  attributeChangedCallback(attrName, oldVal, newVal) {
-    if (oldVal !== newVal) {
-      this.render();
-    }
+class XwordPuzzle extends LitElement {
+  static get properties() {
+    return {
+      activeClue: { type: String },
+      answers: { type: Object },
+      cluePositions: { type: Array },
+      clues: { type: Object },
+      height: { type: Number },
+      invalid: { type: Object },
+      width: { type: Number },
+    };
   }
 
   constructor() {
     super();
 
-    this.cluePositions = [];
-
-    this.clues = {};
-    this.invalid = {};
+    this.activeClue = '';
     this.answers = {};
-
-    this.host = this.attachShadow({ mode: 'open' });
+    this.clues = {};
+    this.cluePositions = [];
+    this.invalid = {};
   }
 
-  connectedCallback() {
-    if (this.cluePositions) {
-      this.render();
+  updated(changedProperties) {
+    if (changedProperties.has('cluePositions') && !this.activeClue) {
+      this.updateComplete.then(() => {
+        // Get the first clue
+        const firstClue = this.shadowRoot.querySelector('xword-clue');
+
+        if (firstClue) {
+          // Focus the first clue
+          firstClue.focus(); // TODO: figure out why this doesn't work
+        }
+      });
     }
   }
 
@@ -61,9 +55,11 @@ class XwordPuzzle extends HTMLElement {
     this.answers = answers;
     this.invalid = invalids;
     this.clues = clues;
-    this.cluePositions = cluePositions;
+    this.cluePositions = [...cluePositions];
+  }
 
-    this.render();
+  activateClue(event) {
+    this.activeClue = event.detail.clueId;
   }
 
   validateClue(event, answerKey) {
@@ -78,7 +74,7 @@ class XwordPuzzle extends HTMLElement {
     answers[answerKey] = answerArray.join('');
     this.answers = answers;
 
-    invalid[answerKey] = this.clues[answerKey].checkAnswer();
+    invalid[answerKey] = !this.clues[answerKey].checkAnswer();
     this.invalid = invalid;
   }
 
@@ -88,14 +84,14 @@ class XwordPuzzle extends HTMLElement {
         display: block;
       }
 
-      .puzzle {
+      .puzzle__grid {
         /* Squares per side */
         --columns: 10;
         --rows: 10;
 
         /* Width as a calculation of base size */
         --width: calc(var(--base-size, 1em) * 10);
-        --height: var(--height, auto);
+        --height-calculated: var(--height, auto);
 
         /* Allow clue boxes to honor our puzzle grid */
         --clue-display: contents;
@@ -111,10 +107,10 @@ class XwordPuzzle extends HTMLElement {
         /* Break puzzle into an even grid */
         display: grid;
         grid-template-columns: repeat(var(--columns), calc(var(--width) / var(--columns)));
-        grid-template-rows: repeat(var(--rows), calc(var(--height) / var(--rows)));
+        grid-template-rows: repeat(var(--rows), calc(var(--height-calculated) / var(--rows)));
 
         /* Make us a square puzzle */
-        height: var(--height);
+        height: var(--height-calculated);
         width: var(--width);
         margin: 1rem;
       }
@@ -124,7 +120,7 @@ class XwordPuzzle extends HTMLElement {
   }
 
   render() {
-    let tmpl = ``;
+    let tmpl = html``;
 
     if (this.cluePositions) {
       const styles = `
@@ -134,36 +130,41 @@ class XwordPuzzle extends HTMLElement {
         --width: 420px
       `;
 
-      const cluePositions = this.cluePositions.reduce(
-        (htmlString, square) => `
-        ${htmlString}
-        <xword-clue
-          column="${square.start.column}"
-          invalid="${this.invalid[square.clue.id] || false}"
-          isDown="${square.direction === ClueDirection.Down}"
-          length="${square.clue.size}"
-          row="${square.start.row}"
-          value="${this.answers[square.clue.id]}"
-        ></xword-clue>
-      `,
-        '',
-      );
+      let activeQuestion = '';
+      if (this.clues && this.activeClue) {
+        activeQuestion = this.clues[this.activeClue].question;
+      }
 
-      /*
-              onSquareUpdate={ev => {
-                this.validateClue(ev, square.clue.id);
-              }}
-            */
-
-      tmpl = `
-        <style>${XwordPuzzle.getStyles()}</style>
-        <div class="puzzle" style="${styles}">
-          ${cluePositions}
+      tmpl = html`
+        <style>
+          ${XwordPuzzle.getStyles()}
+        </style>
+        <div class="puzzle">
+          <div class="puzzle__grid" style="${styles}">
+            ${this.cluePositions.map(
+              square => html`
+                <xword-clue
+                  column="${square.start.column}"
+                  ?down="${square.direction === ClueDirection.Down}"
+                  @focusClue="${this.activateClue}"
+                  id="${square.clue.id}"
+                  ?invalid="${this.invalid[square.clue.id] || false}"
+                  length="${square.clue.size}"
+                  row="${square.start.row}"
+                  @updateSquare="${ev => {
+                    this.validateClue(ev, square.clue.id);
+                  }}"
+                  value="${this.answers[square.clue.id]}"
+                ></xword-clue>
+              `,
+            )}
+          </div>
+          <div class="puzzle__question">${activeQuestion}</div>
         </div>
       `;
     }
 
-    if (this.host) this.host.innerHTML = tmpl;
+    return tmpl;
   }
 }
 

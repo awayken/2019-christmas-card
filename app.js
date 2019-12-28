@@ -2,6 +2,7 @@ import CluePosition, { ClueDirection } from './models/CluePosition.js';
 
 import './components/xword-clue.js';
 import './components/xword-puzzle.js';
+import './components/xword-panel.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const puzzle = document.querySelector('#puzzle');
