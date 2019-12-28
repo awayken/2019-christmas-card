@@ -139,7 +139,7 @@ class XwordPuzzle extends HTMLElement {
         ${htmlString}
         <xword-clue
           column="${square.start.column}"
-          invalid="${this.invalid[square.clue.id]}"
+          invalid="${this.invalid[square.clue.id] || false}"
           isDown="${square.direction === ClueDirection.Down}"
           length="${square.clue.size}"
           row="${square.start.row}"
