@@ -87,6 +87,7 @@ select {
 html,
 body {
   background: #cfd9df;
+  font-family: var(--base-font);
 }
 
 .section {
