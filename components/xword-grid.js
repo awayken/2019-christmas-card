@@ -1,11 +1,12 @@
 import { LitElement, css, html } from 'lit-element';
 
-// import { ClueDirection } from '../models/CluePosition.js';
+import { ClueDirection } from '../models/CluePosition.js';
 
 class XwordGrid extends LitElement {
   static get properties() {
     return {
       activeSquare: { type: Array },
+      direction: { type: String },
       grid: { type: Array },
       height: { type: Number },
       width: { type: Number },
@@ -93,6 +94,7 @@ class XwordGrid extends LitElement {
     super();
 
     this.activeSquare = [];
+    this.direction = ClueDirection.Across;
     this.grid = [];
   }
 
@@ -107,9 +109,30 @@ class XwordGrid extends LitElement {
           const gridItem = gridRow[j];
 
           if (gridItem) {
+            let className = 'clue__box';
+
+            // if (this.invalid) {
+            //   className += ' clue--invalid';
+            // }
+
+            const activeRow = this.direction === ClueDirection.Across && j === this.activeSquare[0];
+            const activeColumn =
+              this.direction === ClueDirection.Down && i === this.activeSquare[1];
+
+            if (activeRow || activeColumn) {
+              className += ' clue__box--active';
+            }
+
             gridHtml = html`
               ${gridHtml}
-              <input class="clue__box" maxlength="1" .value="${gridItem.value || ''}" />
+              <input
+                class="${className}"
+                @click="${() => {
+                  this.setActiveSquare(j, i);
+                }}"
+                maxlength="1"
+                .value="${gridItem.value || ''}"
+              />
             `;
           } else {
             gridHtml = html`
@@ -134,6 +157,24 @@ class XwordGrid extends LitElement {
 
   buildGrid(grid) {
     this.grid = grid;
+  }
+
+  toggleDirection() {
+    if (this.direction === ClueDirection.Across) {
+      this.direction = ClueDirection.Down;
+    } else {
+      this.direction = ClueDirection.Across;
+    }
+  }
+
+  setActiveSquare(x, y) {
+    const [oldX, oldY] = this.activeSquare;
+
+    if (oldX === x && oldY === y) {
+      this.toggleDirection();
+    }
+
+    this.activeSquare = [x, y];
   }
 }
 
