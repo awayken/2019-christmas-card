@@ -38,7 +38,6 @@ class XwordPuzzle extends LitElement {
         grid="${JSON.stringify(this.grid)}"
         width="${this.gridWidth}"
         @updateActiveSquare="${this.setActiveSquare}"
-        @updateDirection="${this.setDirection}"
       >
         Loading the grid...
       </xword-grid>
@@ -70,6 +69,29 @@ class XwordPuzzle extends LitElement {
 
   setActiveSquare(event) {
     const { activeSquare } = event.detail;
+    const [x, y] = activeSquare;
+    const [oldX, oldY] = this.activeSquare;
+
+    if (x !== null && y !== null) {
+      const sameSquare = oldX === x && oldY === y;
+
+      let previousSquare;
+      let nextSquare;
+
+      if (this.direction === ClueDirection.Across) {
+        previousSquare = this.getSquare(x - 1, y);
+        nextSquare = this.getSquare(x + 1, y);
+      } else {
+        previousSquare = this.getSquare(x, y - 1);
+        nextSquare = this.getSquare(x, y + 1);
+      }
+
+      if (sameSquare || (!previousSquare && !nextSquare)) {
+        this.toggleDirection();
+      }
+    } else {
+      this.direction = ClueDirection.Across;
+    }
 
     this.activeSquare = activeSquare;
   }
@@ -78,6 +100,11 @@ class XwordPuzzle extends LitElement {
     const { direction } = event.detail;
 
     this.direction = direction;
+  }
+
+  toggleDirection() {
+    this.direction =
+      this.direction === ClueDirection.Across ? ClueDirection.Down : ClueDirection.Across;
   }
 
   buildGrid(clues) {
