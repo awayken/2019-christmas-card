@@ -120,6 +120,11 @@ class XwordGrid extends LitElement {
     this.grid = grid;
   }
 
+  blurGrid() {
+    this.activeSquare = [];
+    this.direction = ClueDirection.Across;
+  }
+
   renderGrid() {
     let gridHtml = '';
 
@@ -136,7 +141,7 @@ class XwordGrid extends LitElement {
           //   className += ' clue--invalid';
           // }
 
-          if (this.isActiveBox(j, i)) {
+          if (this.isActiveSquare(j, i)) {
             className += ' clue__box--active';
           }
 
@@ -164,7 +169,15 @@ class XwordGrid extends LitElement {
     return gridHtml;
   }
 
-  isActiveBox(x, y) {
+  toggleDirection() {
+    if (this.direction === ClueDirection.Across) {
+      this.direction = ClueDirection.Down;
+    } else {
+      this.direction = ClueDirection.Across;
+    }
+  }
+
+  isActiveSquare(x, y) {
     const activeRow = this.direction === ClueDirection.Across && y === this.activeSquare[1];
     const activeColumn = this.direction === ClueDirection.Down && x === this.activeSquare[0];
 
@@ -179,19 +192,6 @@ class XwordGrid extends LitElement {
     }
 
     return row[x];
-  }
-
-  toggleDirection() {
-    if (this.direction === ClueDirection.Across) {
-      this.direction = ClueDirection.Down;
-    } else {
-      this.direction = ClueDirection.Across;
-    }
-  }
-
-  blurGrid() {
-    this.activeSquare = [];
-    this.direction = ClueDirection.Across;
   }
 
   setActiveSquare(x, y) {
