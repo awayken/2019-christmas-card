@@ -115,11 +115,7 @@ class XwordGrid extends LitElement {
             //   className += ' clue--invalid';
             // }
 
-            const activeRow = this.direction === ClueDirection.Across && i === this.activeSquare[1];
-            const activeColumn =
-              this.direction === ClueDirection.Down && j === this.activeSquare[0];
-
-            if (activeRow || activeColumn) {
+            if (this.isActiveBox(j, i)) {
               className += ' clue__box--active';
             }
 
@@ -158,6 +154,13 @@ class XwordGrid extends LitElement {
 
   buildGrid(grid) {
     this.grid = grid;
+  }
+
+  isActiveBox(x, y) {
+    const activeRow = this.direction === ClueDirection.Across && y === this.activeSquare[1];
+    const activeColumn = this.direction === ClueDirection.Down && x === this.activeSquare[0];
+
+    return activeRow || activeColumn;
   }
 
   getSquare(x, y) {
