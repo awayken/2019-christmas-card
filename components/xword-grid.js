@@ -58,8 +58,8 @@ class XwordGrid extends LitElement {
         -webkit-appearance: none;
         appearance: none;
         box-sizing: border-box;
-        font-family: inherit;
         font-size: var(--base-size, 100%);
+        line-height: var(--base-size, 100%);
         margin: 0;
 
         /* Color the box */
@@ -73,19 +73,17 @@ class XwordGrid extends LitElement {
       }
 
       .clue__box:focus {
-        /* Color the active clue box specifically */
-        background: hsl(220, 100%, 90%);
         outline: 0;
-      }
-
-      .clue__box--invalid {
-        /* What does it look like when we're wrong? */
-        --primary-background: hsl(10, 100%, 65%);
       }
 
       .clue__box--active {
         /* Color all the clue boxes in this active clue */
         background: cornsilk;
+      }
+
+      .clue__box--focus {
+        /* Color the active clue box specifically */
+        background: hsl(220, 100%, 90%);
       }
     `;
   }
@@ -116,7 +114,7 @@ class XwordGrid extends LitElement {
 
   blurGrid() {
     this.dispatchEvent(
-      new CustomEvent('updateActiveSquare', {
+      new CustomEvent('setActiveSquare', {
         detail: {
           activeSquare: [],
         },
@@ -136,25 +134,27 @@ class XwordGrid extends LitElement {
         if (gridItem) {
           let className = 'clue__box';
 
-          // if (this.invalid) {
-          //   className += ' clue--invalid';
-          // }
+          if (this.isActiveClue(j, i)) {
+            className += ' clue__box--active';
+          }
 
           if (this.isActiveSquare(j, i)) {
-            className += ' clue__box--active';
+            className += ' clue__box--focus';
           }
 
           gridHtml = html`
             ${gridHtml}
-            <input
+            <span
               @blur="${this.blurGrid}"
               class="${className}"
               @click="${() => {
                 this.setActiveSquare(j, i);
               }}"
-              maxlength="1"
-              .value="${gridItem.value || ''}"
-            />
+              @keyup="${this.setValue}"
+              tabindex="-1"
+            >
+              ${gridItem.value || ''}
+            </span>
           `;
         } else {
           gridHtml = html`
@@ -168,21 +168,40 @@ class XwordGrid extends LitElement {
     return gridHtml;
   }
 
-  isActiveSquare(x, y) {
+  isActiveClue(x, y) {
     const activeRow = this.direction === ClueDirection.Across && y === this.activeSquare[1];
     const activeColumn = this.direction === ClueDirection.Down && x === this.activeSquare[0];
 
     return activeRow || activeColumn;
   }
 
+  isActiveSquare(x, y) {
+    return y === this.activeSquare[1] && x === this.activeSquare[0];
+  }
+
   setActiveSquare(x, y) {
     this.dispatchEvent(
-      new CustomEvent('updateActiveSquare', {
+      new CustomEvent('setActiveSquare', {
         detail: {
           activeSquare: [x, y],
         },
       }),
     );
+  }
+
+  setValue(event) {
+    const allowedKeys = /^[a-zA-Z]$/;
+    const { key } = event;
+
+    if (allowedKeys.test(key)) {
+      this.dispatchEvent(
+        new CustomEvent('setValue', {
+          detail: {
+            value: key,
+          },
+        }),
+      );
+    }
   }
 }
 

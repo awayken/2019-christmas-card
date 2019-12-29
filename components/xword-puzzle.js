@@ -37,7 +37,8 @@ class XwordPuzzle extends LitElement {
         height="${this.gridHeight}"
         grid="${JSON.stringify(this.grid)}"
         width="${this.gridWidth}"
-        @updateActiveSquare="${this.setActiveSquare}"
+        @setValue="${this.setValue}"
+        @setActiveSquare="${this.setActiveSquare}"
       >
         Loading the grid...
       </xword-grid>
@@ -56,11 +57,11 @@ class XwordPuzzle extends LitElement {
   }
 
   getTitle() {
-    let title = '';
+    let title = 'Select a square to play';
     const [x, y] = this.activeSquare;
+    const square = this.getSquare(x, y);
 
-    if (x && y) {
-      const square = this.getSquare(x, y);
+    if (square) {
       title = square[this.direction] || '????';
     }
 
@@ -96,6 +97,66 @@ class XwordPuzzle extends LitElement {
     this.activeSquare = activeSquare;
   }
 
+  setNextSquare() {
+    const [x, y] = this.activeSquare;
+    let nextActive = [x, y];
+
+    let foundNextSquare = false;
+    let switchDirection = false;
+    let triedEverything = false;
+
+    let newX = x;
+    let newY = y;
+
+    while (!foundNextSquare && !triedEverything) {
+      if (this.direction === ClueDirection.Across) {
+        newX += 1;
+      } else {
+        newY += 1;
+      }
+
+      if (newX >= this.gridWidth) {
+        newX = 0;
+        newY += 1;
+      }
+
+      if (newY >= this.gridHeight) {
+        newX += 1;
+        newY = 0;
+      }
+
+      const trySquare = this.getSquare(newX, newY);
+      if (trySquare && trySquare[this.direction] && trySquare.value === '') {
+        nextActive = [newX, newY];
+        foundNextSquare = true;
+        break;
+      }
+
+      if (newX === x && newY === y) {
+        if (!switchDirection) {
+          switchDirection = true;
+        } else {
+          triedEverything = true;
+        }
+
+        this.toggleDirection();
+      }
+    }
+
+    this.activeSquare = nextActive;
+  }
+
+  setValue(event) {
+    const { value } = event.detail;
+    const [x, y] = this.activeSquare;
+    const square = this.getSquare(x, y);
+    square.value = value;
+
+    // If we have any empty squares, go ahead and find the next one
+    this.setNextSquare();
+    // otherwise, solve!
+  }
+
   setDirection(event) {
     const { direction } = event.detail;
 
@@ -109,6 +170,8 @@ class XwordPuzzle extends LitElement {
 
   buildGrid(clues) {
     const [rauschwordClue, puzzleClue] = clues;
+
+    // build answer grid
 
     const grid = [
       [
@@ -166,14 +229,6 @@ class XwordPuzzle extends LitElement {
         },
         {
           across: rauschwordClue.clue.question,
-          value: '',
-        },
-      ],
-      [
-        null,
-        null,
-        {
-          down: puzzleClue.clue.question,
           value: '',
         },
       ],
