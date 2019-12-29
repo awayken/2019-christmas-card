@@ -23,18 +23,13 @@ class XwordGrid extends LitElement {
         /* Squares per side */
         --columns: 10;
         --rows: 10;
-        --square-size: 40px;
+
+        --base-size: 1.1em;
 
         /* Width as a calculation of base size */
-        --width: calc(var(--base-size, 1em) * 10);
-        --height-calculated: var(--height, auto);
-
-        /* Allow clue boxes to honor our puzzle grid */
-        --clue-display: contents;
-
-        /* Start column and row for this clue  */
-        --column: 1;
-        --row: 1;
+        --square-size: calc(var(--base-size) * 2);
+        --width: calc(var(--square-size) * var(--columns));
+        --height: calc(var(--square-size) * var(--rows));
 
         /* Color the puzzle */
         background: var(--primary-background);
@@ -42,13 +37,20 @@ class XwordGrid extends LitElement {
 
         /* Break puzzle into an even grid */
         display: grid;
-        grid-template-columns: repeat(var(--columns), calc(var(--width) / var(--columns)));
-        grid-template-rows: repeat(var(--rows), calc(var(--height-calculated) / var(--rows)));
+        grid-template-columns: repeat(var(--columns), calc(100% / var(--columns)));
+        grid-template-rows: repeat(var(--rows), calc(100% / var(--rows)));
 
         /* Make us a square puzzle */
-        height: var(--height-calculated);
+        height: var(--height);
         width: var(--width);
-        margin: 1rem;
+        margin: 1rem auto;
+        max-width: 100%;
+      }
+
+      @media (min-width: 30em) {
+        .puzzle__grid {
+          --base-size: 2em;
+        }
       }
 
       .clue__box {
@@ -57,7 +59,7 @@ class XwordGrid extends LitElement {
         appearance: none;
         box-sizing: border-box;
         font-family: inherit;
-        font-size: 100%;
+        font-size: var(--base-size, 100%);
         margin: 0;
 
         /* Color the box */
@@ -68,14 +70,12 @@ class XwordGrid extends LitElement {
         /* Style the text */
         text-align: center;
         text-transform: uppercase;
-
-        min-height: var(--square-size, auto);
-        min-width: var(--square-size, auto);
       }
 
       .clue__box:focus {
         /* Color the active clue box specifically */
         background: hsl(220, 100%, 90%);
+        outline: 0;
       }
 
       .clue__box--invalid {
@@ -106,7 +106,7 @@ class XwordGrid extends LitElement {
     }
 
     const styles = `
-      --columns: ${this.width}; --rows: ${this.height}; --primary-background: #000; --width: 420px;
+      --columns: ${this.width}; --rows: ${this.height}; --primary-background: #000;
     `;
 
     return html`
