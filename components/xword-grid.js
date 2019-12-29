@@ -102,43 +102,7 @@ class XwordGrid extends LitElement {
     let gridHtml = '';
 
     if (this.grid.length) {
-      for (let i = 0; i < this.height; i += 1) {
-        const gridRow = this.grid[i] || [];
-
-        for (let j = 0; j < this.width; j += 1) {
-          const gridItem = gridRow[j];
-
-          if (gridItem) {
-            let className = 'clue__box';
-
-            // if (this.invalid) {
-            //   className += ' clue--invalid';
-            // }
-
-            if (this.isActiveBox(j, i)) {
-              className += ' clue__box--active';
-            }
-
-            gridHtml = html`
-              ${gridHtml}
-              <input
-                @blur="${this.blurGrid}"
-                class="${className}"
-                @click="${() => {
-                  this.setActiveSquare(j, i);
-                }}"
-                maxlength="1"
-                .value="${gridItem.value || ''}"
-              />
-            `;
-          } else {
-            gridHtml = html`
-              ${gridHtml}
-              <span></span>
-            `;
-          }
-        }
-      }
+      gridHtml = this.renderGrid();
     }
 
     const styles = `
@@ -154,6 +118,50 @@ class XwordGrid extends LitElement {
 
   buildGrid(grid) {
     this.grid = grid;
+  }
+
+  renderGrid() {
+    let gridHtml = '';
+
+    for (let i = 0; i < this.height; i += 1) {
+      const gridRow = this.grid[i] || [];
+
+      for (let j = 0; j < this.width; j += 1) {
+        const gridItem = gridRow[j];
+
+        if (gridItem) {
+          let className = 'clue__box';
+
+          // if (this.invalid) {
+          //   className += ' clue--invalid';
+          // }
+
+          if (this.isActiveBox(j, i)) {
+            className += ' clue__box--active';
+          }
+
+          gridHtml = html`
+            ${gridHtml}
+            <input
+              @blur="${this.blurGrid}"
+              class="${className}"
+              @click="${() => {
+                this.setActiveSquare(j, i);
+              }}"
+              maxlength="1"
+              .value="${gridItem.value || ''}"
+            />
+          `;
+        } else {
+          gridHtml = html`
+            ${gridHtml}
+            <span></span>
+          `;
+        }
+      }
+    }
+
+    return gridHtml;
   }
 
   isActiveBox(x, y) {
