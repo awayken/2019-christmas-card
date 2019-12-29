@@ -16,7 +16,13 @@ class XwordPuzzle extends LitElement {
   }
 
   static get styles() {
-    return css``;
+    return css`
+      :host {
+        display: block;
+        margin: 0 auto;
+        max-width: 1000px;
+      }
+    `;
   }
 
   constructor() {
@@ -25,6 +31,7 @@ class XwordPuzzle extends LitElement {
     this.activeSquare = [];
     this.direction = ClueDirection.Across;
     this.grid = [];
+    this.gridAnswers = [];
     this.gridHeight = 0;
     this.gridWidth = 0;
   }
@@ -46,8 +53,8 @@ class XwordPuzzle extends LitElement {
     `;
   }
 
-  getSquare(x, y) {
-    const row = this.grid[y];
+  getSquare(x, y, grid = this.grid) {
+    const row = grid[y];
 
     if (!row) {
       return null;
@@ -144,17 +151,42 @@ class XwordPuzzle extends LitElement {
     }
 
     this.activeSquare = nextActive;
+
+    return triedEverything;
   }
 
   setValue(event) {
     const { value } = event.detail;
     const [x, y] = this.activeSquare;
     const square = this.getSquare(x, y);
+
     square.value = value;
 
-    // If we have any empty squares, go ahead and find the next one
-    this.setNextSquare();
-    // otherwise, solve!
+    const hasNoEmptySquares = this.setNextSquare();
+
+    if (hasNoEmptySquares) {
+      const isValid = this.checkValues();
+      console.log(isValid ? 'Is valid!' : 'Not quite valid');
+    }
+  }
+
+  checkValues() {
+    for (let y = 0; y < this.gridHeight; y += 1) {
+      for (let x = 0; x < this.gridWidth; x += 1) {
+        const square = this.getSquare(x, y);
+        const answer = this.getSquare(x, y, this.gridAnswers);
+
+        if (square) {
+          const squareValid = square.value === answer;
+
+          if (!squareValid) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
   }
 
   setDirection(event) {
@@ -266,7 +298,10 @@ class XwordPuzzle extends LitElement {
       ],
     ];
 
+    const answers = [[]];
+
     this.grid = grid;
+    this.gridAnswers = answers;
     this.gridHeight = this.grid.length;
     this.gridWidth = this.grid[0].length;
   }
