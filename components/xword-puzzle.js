@@ -1,170 +1,192 @@
-import { LitElement, html } from 'lit-element';
+import { LitElement, css, html } from 'lit-element';
+
+import './xword-grid.js';
 
 import { ClueDirection } from '../models/CluePosition.js';
 
 class XwordPuzzle extends LitElement {
   static get properties() {
     return {
-      activeClue: { type: String },
-      answers: { type: Object },
-      cluePositions: { type: Array },
-      clues: { type: Object },
-      height: { type: Number },
-      invalid: { type: Object },
-      width: { type: Number },
+      activeSquare: { type: Array },
+      direction: { type: String },
+      grid: { type: Array },
+      gridHeight: { type: Number },
+      gridWidth: { type: Number },
     };
+  }
+
+  static get styles() {
+    return css``;
   }
 
   constructor() {
     super();
 
-    this.activeClue = '';
-    this.answers = {};
-    this.clues = {};
-    this.cluePositions = [];
-    this.invalid = {};
-  }
-
-  updated(changedProperties) {
-    if (changedProperties.has('cluePositions') && !this.activeClue) {
-      this.updateComplete.then(() => {
-        // Get the first clue
-        const firstClue = this.shadowRoot.querySelector('xword-clue');
-
-        if (firstClue) {
-          // Focus the first clue
-          firstClue.focus(); // TODO: figure out why this doesn't work
-        }
-      });
-    }
-  }
-
-  populate(cluePositions) {
-    const answers = {};
-    const invalids = {};
-    const clues = {};
-
-    for (const cluePosition of cluePositions) {
-      if (cluePosition && cluePosition.clue) {
-        invalids[cluePosition.clue.id] = null;
-        answers[cluePosition.clue.id] = '';
-        clues[cluePosition.clue.id] = cluePosition.clue;
-      }
-    }
-
-    this.answers = answers;
-    this.invalid = invalids;
-    this.clues = clues;
-    this.cluePositions = [...cluePositions];
-  }
-
-  activateClue(event) {
-    this.activeClue = event.detail.clueId;
-  }
-
-  validateClue(event, answerKey) {
-    const { squareIndex, squareValue } = event.detail;
-    const answers = { ...this.answers };
-    const invalid = { ...this.invalid };
-    const currentAnswer = answers[answerKey];
-
-    const answerArray = currentAnswer.split('');
-    answerArray[squareIndex] = squareValue;
-
-    answers[answerKey] = answerArray.join('');
-    this.answers = answers;
-
-    invalid[answerKey] = !this.clues[answerKey].checkAnswer();
-    this.invalid = invalid;
-  }
-
-  static getStyles() {
-    const styles = `
-      :host {
-        display: block;
-      }
-
-      .puzzle__grid {
-        /* Squares per side */
-        --columns: 10;
-        --rows: 10;
-
-        /* Width as a calculation of base size */
-        --width: calc(var(--base-size, 1em) * 10);
-        --height-calculated: var(--height, auto);
-
-        /* Allow clue boxes to honor our puzzle grid */
-        --clue-display: contents;
-
-        /* Start column and row for this clue  */
-        --column: 1;
-        --row: 1;
-
-        /* Color the puzzle */
-        background: var(--primary-background);
-        border: 2px solid var(--primary-background);
-
-        /* Break puzzle into an even grid */
-        display: grid;
-        grid-template-columns: repeat(var(--columns), calc(var(--width) / var(--columns)));
-        grid-template-rows: repeat(var(--rows), calc(var(--height-calculated) / var(--rows)));
-
-        /* Make us a square puzzle */
-        height: var(--height-calculated);
-        width: var(--width);
-        margin: 1rem;
-      }
-    `;
-
-    return styles;
+    this.activeSquare = [];
+    this.direction = ClueDirection.Across;
+    this.grid = [];
+    this.gridHeight = 0;
+    this.gridWidth = 0;
   }
 
   render() {
-    let tmpl = html``;
+    return html`
+      <xword-grid
+        activeSquare="${JSON.stringify(this.activeSquare)}"
+        direction="${this.direction}"
+        height="${this.gridHeight}"
+        grid="${JSON.stringify(this.grid)}"
+        width="${this.gridWidth}"
+        @updateActiveSquare="${this.setActiveSquare}"
+        @updateDirection="${this.setDirection}"
+      >
+        Loading the grid...
+      </xword-grid>
+      <div>${this.getTitle()}</div>
+    `;
+  }
 
-    if (this.cluePositions) {
-      const styles = `
-        --columns: ${this.width};
-        --rows: ${this.height};
-        --primary-background: #000;
-        --width: 420px
-      `;
+  getSquare(x, y) {
+    const row = this.grid[y];
 
-      let activeQuestion = '';
-      if (this.clues && this.activeClue) {
-        activeQuestion = this.clues[this.activeClue].question;
-      }
-
-      tmpl = html`
-        <style>
-          ${XwordPuzzle.getStyles()}
-        </style>
-        <div class="puzzle">
-          <div class="puzzle__grid" style="${styles}">
-            ${this.cluePositions.map(
-              square => html`
-                <xword-clue
-                  column="${square.start.column}"
-                  ?down="${square.direction === ClueDirection.Down}"
-                  @focusClue="${this.activateClue}"
-                  id="${square.clue.id}"
-                  ?invalid="${this.invalid[square.clue.id] || false}"
-                  length="${square.clue.size}"
-                  row="${square.start.row}"
-                  @updateSquare="${ev => {
-                    this.validateClue(ev, square.clue.id);
-                  }}"
-                  value="${this.answers[square.clue.id]}"
-                ></xword-clue>
-              `,
-            )}
-          </div>
-          <div class="puzzle__question">${activeQuestion}</div>
-        </div>
-      `;
+    if (!row) {
+      return null;
     }
 
-    return tmpl;
+    return row[x];
+  }
+
+  getTitle() {
+    let title = '';
+    const [x, y] = this.activeSquare;
+
+    if (x && y) {
+      const square = this.getSquare(x, y);
+      title = square[this.direction] || '????';
+    }
+
+    return title;
+  }
+
+  setActiveSquare(event) {
+    const { activeSquare } = event.detail;
+
+    this.activeSquare = activeSquare;
+  }
+
+  setDirection(event) {
+    const { direction } = event.detail;
+
+    this.direction = direction;
+  }
+
+  buildGrid(clues) {
+    const [rauschwordClue, puzzleClue] = clues;
+
+    const grid = [
+      [
+        null,
+        null,
+        {
+          down: puzzleClue.clue.question,
+          value: '',
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+      ],
+      [
+        {
+          across: rauschwordClue.clue.question,
+          value: '',
+        },
+        {
+          across: rauschwordClue.clue.question,
+          value: '',
+        },
+        {
+          across: rauschwordClue.clue.question,
+          down: puzzleClue.clue.question,
+          value: '',
+        },
+        {
+          across: rauschwordClue.clue.question,
+          value: '',
+        },
+        {
+          across: rauschwordClue.clue.question,
+          value: '',
+        },
+        {
+          across: rauschwordClue.clue.question,
+          value: '',
+        },
+        {
+          across: rauschwordClue.clue.question,
+          value: '',
+        },
+        {
+          across: rauschwordClue.clue.question,
+          value: '',
+        },
+        {
+          across: rauschwordClue.clue.question,
+          value: '',
+        },
+        {
+          across: rauschwordClue.clue.question,
+          value: '',
+        },
+      ],
+      [
+        null,
+        null,
+        {
+          down: puzzleClue.clue.question,
+          value: '',
+        },
+      ],
+      [
+        null,
+        null,
+        {
+          down: puzzleClue.clue.question,
+          value: '',
+        },
+      ],
+      [
+        null,
+        null,
+        {
+          down: puzzleClue.clue.question,
+          value: '',
+        },
+      ],
+      [
+        null,
+        null,
+        {
+          down: puzzleClue.clue.question,
+          value: '',
+        },
+      ],
+      [
+        null,
+        null,
+        {
+          down: puzzleClue.clue.question,
+          value: '',
+        },
+      ],
+    ];
+
+    this.grid = grid;
+    this.gridHeight = this.grid.length;
+    this.gridWidth = this.grid[0].length;
   }
 }
 

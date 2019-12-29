@@ -93,8 +93,6 @@ class XwordGrid extends LitElement {
   constructor() {
     super();
 
-    this.activeSquare = [];
-    this.direction = ClueDirection.Across;
     this.grid = [];
   }
 
@@ -116,13 +114,22 @@ class XwordGrid extends LitElement {
     `;
   }
 
-  buildGrid(grid) {
-    this.grid = grid;
-  }
-
   blurGrid() {
-    this.activeSquare = [];
-    this.direction = ClueDirection.Across;
+    this.dispatchEvent(
+      new CustomEvent('updateActiveSquare', {
+        detail: {
+          activeSquare: [],
+        },
+      }),
+    );
+
+    this.dispatchEvent(
+      new CustomEvent('updateDirection', {
+        detail: {
+          direction: ClueDirection.Across,
+        },
+      }),
+    );
   }
 
   renderGrid() {
@@ -170,11 +177,16 @@ class XwordGrid extends LitElement {
   }
 
   toggleDirection() {
-    if (this.direction === ClueDirection.Across) {
-      this.direction = ClueDirection.Down;
-    } else {
-      this.direction = ClueDirection.Across;
-    }
+    const newDirection =
+      this.direction === ClueDirection.Across ? ClueDirection.Down : ClueDirection.Across;
+
+    this.dispatchEvent(
+      new CustomEvent('updateDirection', {
+        detail: {
+          direction: newDirection,
+        },
+      }),
+    );
   }
 
   isActiveSquare(x, y) {
@@ -213,7 +225,13 @@ class XwordGrid extends LitElement {
       this.toggleDirection();
     }
 
-    this.activeSquare = [x, y];
+    this.dispatchEvent(
+      new CustomEvent('updateActiveSquare', {
+        detail: {
+          activeSquare: [x, y],
+        },
+      }),
+    );
   }
 }
 
