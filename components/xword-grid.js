@@ -126,6 +126,7 @@ class XwordGrid extends LitElement {
             gridHtml = html`
               ${gridHtml}
               <input
+                @blur="${this.blurGrid}"
                 class="${className}"
                 @click="${() => {
                   this.setActiveSquare(j, i);
@@ -165,6 +166,11 @@ class XwordGrid extends LitElement {
     } else {
       this.direction = ClueDirection.Across;
     }
+  }
+
+  blurGrid() {
+    this.activeSquare = [];
+    this.direction = ClueDirection.Across;
   }
 
   setActiveSquare(x, y) {
