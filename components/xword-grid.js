@@ -115,9 +115,9 @@ class XwordGrid extends LitElement {
             //   className += ' clue--invalid';
             // }
 
-            const activeRow = this.direction === ClueDirection.Across && j === this.activeSquare[0];
+            const activeRow = this.direction === ClueDirection.Across && i === this.activeSquare[1];
             const activeColumn =
-              this.direction === ClueDirection.Down && i === this.activeSquare[1];
+              this.direction === ClueDirection.Down && j === this.activeSquare[0];
 
             if (activeRow || activeColumn) {
               className += ' clue__box--active';
@@ -160,6 +160,16 @@ class XwordGrid extends LitElement {
     this.grid = grid;
   }
 
+  getSquare(x, y) {
+    const row = this.grid[y];
+
+    if (!row) {
+      return null;
+    }
+
+    return row[x];
+  }
+
   toggleDirection() {
     if (this.direction === ClueDirection.Across) {
       this.direction = ClueDirection.Down;
@@ -175,8 +185,20 @@ class XwordGrid extends LitElement {
 
   setActiveSquare(x, y) {
     const [oldX, oldY] = this.activeSquare;
+    const sameSquare = oldX === x && oldY === y;
 
-    if (oldX === x && oldY === y) {
+    let previousSquare;
+    let nextSquare;
+
+    if (this.direction === ClueDirection.Across) {
+      previousSquare = this.getSquare(x - 1, y);
+      nextSquare = this.getSquare(x + 1, y);
+    } else {
+      previousSquare = this.getSquare(x, y - 1);
+      nextSquare = this.getSquare(x, y + 1);
+    }
+
+    if (sameSquare || (!previousSquare && !nextSquare)) {
       this.toggleDirection();
     }
 
