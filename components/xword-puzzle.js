@@ -2,7 +2,7 @@ import { LitElement, css, html } from 'lit-element';
 
 import './xword-grid.js';
 
-import { ClueDirection } from '../models/CluePosition.js';
+import { ClueDirection } from '../models/Clue.js';
 
 class XwordPuzzle extends LitElement {
   static get properties() {
@@ -200,110 +200,42 @@ class XwordPuzzle extends LitElement {
       this.direction === ClueDirection.Across ? ClueDirection.Down : ClueDirection.Across;
   }
 
-  buildGrid(clues) {
-    const [rauschwordClue, puzzleClue] = clues;
+  buildGrid(clues, width, height) {
+    const grid = [];
+    const gridAnswers = [];
 
-    // build answer grid
+    for (const clue of clues) {
+      const answerSize = clue.answer.length;
+      const { column, row } = clue.start;
 
-    const grid = [
-      [
-        null,
-        null,
-        {
-          down: puzzleClue.clue.question,
-          value: '',
-        },
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-      ],
-      [
-        {
-          across: rauschwordClue.clue.question,
-          value: '',
-        },
-        {
-          across: rauschwordClue.clue.question,
-          value: '',
-        },
-        {
-          across: rauschwordClue.clue.question,
-          down: puzzleClue.clue.question,
-          value: '',
-        },
-        {
-          across: rauschwordClue.clue.question,
-          value: '',
-        },
-        {
-          across: rauschwordClue.clue.question,
-          value: '',
-        },
-        {
-          across: rauschwordClue.clue.question,
-          value: '',
-        },
-        {
-          across: rauschwordClue.clue.question,
-          value: '',
-        },
-        {
-          across: rauschwordClue.clue.question,
-          value: '',
-        },
-        {
-          across: rauschwordClue.clue.question,
-          value: '',
-        },
-        {
-          across: rauschwordClue.clue.question,
-          value: '',
-        },
-      ],
-      [
-        null,
-        null,
-        {
-          down: puzzleClue.clue.question,
-          value: '',
-        },
-      ],
-      [
-        null,
-        null,
-        {
-          down: puzzleClue.clue.question,
-          value: '',
-        },
-      ],
-      [
-        null,
-        null,
-        {
-          down: puzzleClue.clue.question,
-          value: '',
-        },
-      ],
-      [
-        null,
-        null,
-        {
-          down: puzzleClue.clue.question,
-          value: '',
-        },
-      ],
-    ];
+      let x = column;
+      let y = row;
 
-    const answers = [[]];
+      for (let i = 0; i < answerSize; i += 1) {
+        if (!grid[y]) {
+          grid[y] = [];
+          gridAnswers[y] = [];
+        }
+
+        if (!grid[y][x]) {
+          grid[y][x] = { value: '' };
+          gridAnswers[y][x] = clue.answer.charAt(i);
+        }
+
+        grid[y][x][clue.direction] = clue.question;
+
+        if (clue.direction === ClueDirection.Across) {
+          x += 1;
+        } else {
+          y += 1;
+        }
+      }
+    }
 
     this.grid = grid;
-    this.gridAnswers = answers;
-    this.gridHeight = this.grid.length;
-    this.gridWidth = this.grid[0].length;
+    this.gridAnswers = gridAnswers;
+    this.gridHeight = height;
+    this.gridWidth = width;
   }
 }
 

@@ -1,6 +1,6 @@
 import { LitElement, css, html } from 'lit-element';
 
-import { ClueDirection } from '../models/CluePosition.js';
+import { ClueDirection } from '../models/Clue.js';
 
 class XwordGrid extends LitElement {
   static get properties() {

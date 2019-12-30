@@ -1,21 +1,20 @@
-import CluePosition, { ClueDirection } from './models/CluePosition.js';
+import Clue, { ClueDirection } from './models/Clue.js';
 
 import './components/xword-puzzle.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const puzzle = document.querySelector('#puzzle');
-  const rauschwordClue = new CluePosition(
+  const rauschwordClue = new Clue(
     'rauschword',
     'Title 1',
     'rauschword',
-    0,
     ClueDirection.Across,
+    0,
     1,
-    2,
   );
-  const puzzleClue = new CluePosition('puzzle', 'Title 2', 'puzzle', 1, ClueDirection.Down, 3, 1);
+  const puzzleClue = new Clue('puzzle', 'Title 2', 'puzzle', ClueDirection.Down, 2, 0);
 
-  puzzle.buildGrid([rauschwordClue, puzzleClue]);
+  puzzle.buildGrid([rauschwordClue, puzzleClue], 10, 6);
 });
 
 // Section transition

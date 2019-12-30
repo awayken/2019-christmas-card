@@ -1,19 +1,14 @@
+export const ClueDirection = {
+  Across: 'across',
+  Down: 'down',
+};
+
 export default class Clue {
-  constructor(id, question, answer) {
+  constructor(id, question, answer, direction, column, row) {
     this.id = id;
     this.question = question;
     this.answer = answer;
-  }
-
-  get size() {
-    return this.answer.length;
-  }
-
-  checkAnswer(possibleAnswer) {
-    if (!possibleAnswer) {
-      return false;
-    }
-
-    return possibleAnswer === this.answer;
+    this.direction = direction;
+    this.start = { column, row };
   }
 }
