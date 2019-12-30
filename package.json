@@ -17,15 +17,16 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "es-dev-server": "^1.32.0",
-    "eslint": "^6.1.0",
+    "@open-wc/building-webpack": "^2.1.0",
     "@open-wc/eslint-config": "^2.0.0",
     "@open-wc/prettier-config": "^0.1.10",
+    "es-dev-server": "^1.32.0",
+    "eslint": "^6.1.0",
     "husky": "^1.0.0",
     "lint-staged": "^8.0.0",
-    "@open-wc/building-webpack": "^2.1.0",
     "webpack": "^4.28.0",
-    "webpack-cli": "^3.3.4"
+    "webpack-cli": "^3.3.4",
+    "webpack-merge": "^4.2.2"
   },
   "eslintConfig": {
     "extends": [
