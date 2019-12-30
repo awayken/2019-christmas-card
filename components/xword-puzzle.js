@@ -12,6 +12,7 @@ class XwordPuzzle extends LitElement {
       grid: { type: Array },
       gridHeight: { type: Number },
       gridWidth: { type: Number },
+      isWinner: { type: Boolean },
     };
   }
 
@@ -19,8 +20,21 @@ class XwordPuzzle extends LitElement {
     return css`
       :host {
         display: block;
-        margin: 0 auto;
-        max-width: 1000px;
+        position: relative;
+      }
+
+      xword-grid {
+        max-width: 100%;
+        overflow: auto;
+      }
+
+      .puzzle__title {
+        background: rgba(255, 255, 255, 0.9);
+        bottom: 0;
+        padding: 0.5em;
+        position: -webkit-sticky;
+        position: sticky;
+        z-index: 10;
       }
     `;
   }
@@ -34,14 +48,22 @@ class XwordPuzzle extends LitElement {
     this.gridAnswers = [];
     this.gridHeight = 0;
     this.gridWidth = 0;
+    this.isWinner = false;
   }
 
   render() {
+    let title = this.getTitle();
+
+    if (this.isWinner) {
+      title = 'You solved the puzzle!';
+    }
+
     return html`
       <xword-grid
         activeSquare="${JSON.stringify(this.activeSquare)}"
         direction="${this.direction}"
         height="${this.gridHeight}"
+        ?isWinner="${this.isWinner}"
         grid="${JSON.stringify(this.grid)}"
         width="${this.gridWidth}"
         @setValue="${this.setValue}"
@@ -49,7 +71,7 @@ class XwordPuzzle extends LitElement {
       >
         Loading the grid...
       </xword-grid>
-      <div>${this.getTitle()}</div>
+      <div class="puzzle__title">${title}</div>
     `;
   }
 
@@ -64,12 +86,12 @@ class XwordPuzzle extends LitElement {
   }
 
   getTitle() {
-    let title = 'Select a square to play';
+    let title = 'Select a square to start playing.';
     const [x, y] = this.activeSquare;
     const square = this.getSquare(x, y);
 
     if (square) {
-      title = square[this.direction] || '????';
+      title = `Clue: ${square[this.direction]}` || '????';
     }
 
     return title;
@@ -166,7 +188,9 @@ class XwordPuzzle extends LitElement {
 
     if (hasNoEmptySquares) {
       const isValid = this.checkValues();
-      console.log(isValid ? 'Is valid!' : 'Not quite valid');
+      if (isValid) {
+        this.isWinner = true;
+      }
     }
   }
 
@@ -177,7 +201,7 @@ class XwordPuzzle extends LitElement {
         const answer = this.getSquare(x, y, this.gridAnswers);
 
         if (square) {
-          const squareValid = square.value === answer;
+          const squareValid = square.value.toLowerCase() === answer.toLowerCase();
 
           if (!squareValid) {
             return false;

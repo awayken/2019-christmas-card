@@ -9,6 +9,7 @@ class XwordGrid extends LitElement {
       direction: { type: String },
       grid: { type: Array },
       height: { type: Number },
+      isWinner: { type: Boolean },
       width: { type: Number },
     };
   }
@@ -16,7 +17,9 @@ class XwordGrid extends LitElement {
   static get styles() {
     return css`
       :host {
+        box-sizing: border-box;
         display: block;
+        margin: 4px;
       }
 
       .puzzle__grid {
@@ -32,8 +35,9 @@ class XwordGrid extends LitElement {
         --height: calc(var(--square-size) * var(--rows));
 
         /* Color the puzzle */
-        background: var(--primary-background);
-        border: 2px solid var(--primary-background);
+        background: var(--primary-background, #000);
+        border: 2px solid var(--primary-background, #000);
+        border-radius: 0.35em;
 
         /* Break puzzle into an even grid */
         display: grid;
@@ -43,13 +47,12 @@ class XwordGrid extends LitElement {
         /* Make us a square puzzle */
         height: var(--height);
         width: var(--width);
-        margin: 1rem auto;
-        max-width: 100%;
+        margin: 0 auto;
       }
 
       @media (min-width: 30em) {
         .puzzle__grid {
-          --base-size: 2em;
+          --base-size: 1.5em;
         }
       }
 
@@ -59,11 +62,11 @@ class XwordGrid extends LitElement {
         appearance: none;
         box-sizing: border-box;
         font-size: var(--base-size, 100%);
-        line-height: var(--base-size, 100%);
+        line-height: 1.85;
         margin: 0;
 
         /* Color the box */
-        background: var(--secondary-background, white);
+        background: var(--secondary-background, #fff);
         border: 1px solid currentColor;
         color: var(--primary-background);
 
@@ -92,6 +95,7 @@ class XwordGrid extends LitElement {
     super();
 
     this.grid = [];
+    this.isWinner = false;
   }
 
   render() {
@@ -102,7 +106,9 @@ class XwordGrid extends LitElement {
     }
 
     const styles = `
-      --columns: ${this.width}; --rows: ${this.height}; --primary-background: #000;
+      --columns: ${this.width}; --rows: ${this.height}; --primary-background: ${
+      this.isWinner ? 'green' : 'black'
+    };
     `;
 
     return html`
