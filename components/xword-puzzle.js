@@ -29,8 +29,8 @@ class XwordPuzzle extends LitElement {
       }
 
       .puzzle__title {
-        background: rgba(255, 255, 255, 0.9);
-        bottom: 0;
+        background: #cfd9dfee;
+        top: 0;
         padding: 0.5em;
         position: -webkit-sticky;
         position: sticky;
@@ -59,6 +59,7 @@ class XwordPuzzle extends LitElement {
     }
 
     return html`
+      <div class="puzzle__title">${title}</div>
       <xword-grid
         activeSquare="${JSON.stringify(this.activeSquare)}"
         direction="${this.direction}"
@@ -71,7 +72,6 @@ class XwordPuzzle extends LitElement {
       >
         Loading the grid...
       </xword-grid>
-      <div class="puzzle__title">${title}</div>
     `;
   }
 
