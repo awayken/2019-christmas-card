@@ -12,7 +12,7 @@
     "format:prettier": "prettier \"**/*.js\" --write --ignore-path .gitignore",
     "lint": "npm run lint:eslint && npm run lint:prettier",
     "format": "npm run format:eslint && npm run format:prettier",
-    "start:build": "cd dist && es-dev-server --open",
+    "start:build": "cd public && es-dev-server --open",
     "build": "webpack --mode=production"
   },
   "license": "MIT",
@@ -20,6 +20,7 @@
     "@open-wc/building-webpack": "^2.1.0",
     "@open-wc/eslint-config": "^2.0.0",
     "@open-wc/prettier-config": "^0.1.10",
+    "copy-webpack-plugin": "^5.1.1",
     "es-dev-server": "^1.32.0",
     "eslint": "^6.1.0",
     "husky": "^1.0.0",
