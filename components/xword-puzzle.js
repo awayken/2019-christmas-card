@@ -267,6 +267,12 @@ class XwordPuzzle extends LitElement {
     this.gridAnswers = gridAnswers;
     this.gridHeight = height;
     this.gridWidth = width;
+
+    this.activeSquare = [0, 0];
+    const firstSquare = this.getSquare(0, 0);
+    if (!firstSquare) {
+      this.setNextSquare();
+    }
   }
 }
 
