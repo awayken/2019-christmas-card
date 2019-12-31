@@ -81,12 +81,12 @@ class XwordGrid extends LitElement {
 
       .clue__box--active {
         /* Color all the clue boxes in this active clue */
-        background: cornsilk;
+        background: hsl(40, 100%, 75%);
       }
 
       .clue__box--focus {
         /* Color the active clue box specifically */
-        background: hsl(220, 100%, 90%);
+        background: hsl(220, 100%, 75%);
       }
     `;
   }
