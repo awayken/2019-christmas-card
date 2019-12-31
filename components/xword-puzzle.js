@@ -254,6 +254,7 @@ class XwordPuzzle extends LitElement {
         }
 
         grid[y][x][clue.direction] = clue.question;
+        grid[y][x][`${clue.direction}id`] = clue.id;
 
         if (clue.direction === ClueDirection.Across) {
           x += 1;

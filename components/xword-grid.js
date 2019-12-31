@@ -1,7 +1,5 @@
 import { LitElement, css, html } from 'lit-element';
 
-import { ClueDirection } from '../models/Clue.js';
-
 class XwordGrid extends LitElement {
   static get properties() {
     return {
@@ -140,7 +138,7 @@ class XwordGrid extends LitElement {
         if (gridItem) {
           let className = 'clue__box';
 
-          if (this.isActiveClue(j, i)) {
+          if (this.isActiveClue(gridItem)) {
             className += ' clue__box--active';
           }
 
@@ -174,11 +172,16 @@ class XwordGrid extends LitElement {
     return gridHtml;
   }
 
-  isActiveClue(x, y) {
-    const activeRow = this.direction === ClueDirection.Across && y === this.activeSquare[1];
-    const activeColumn = this.direction === ClueDirection.Down && x === this.activeSquare[0];
+  isActiveClue(gridItem) {
+    const [x, y] = this.activeSquare;
+    const activeItem = (this.grid[y] || [])[x];
+    const directionId = `${this.direction}id`;
 
-    return activeRow || activeColumn;
+    if (activeItem && activeItem[directionId] && gridItem && gridItem[directionId]) {
+      return activeItem[directionId] === gridItem[directionId];
+    }
+
+    return false;
   }
 
   isActiveSquare(x, y) {
