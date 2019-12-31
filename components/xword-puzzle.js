@@ -91,7 +91,14 @@ class XwordPuzzle extends LitElement {
     const square = this.getSquare(x, y);
 
     if (square) {
-      title = `Clue: ${square[this.direction]}` || '????';
+      const squareDirection = square[this.direction];
+
+      if (squareDirection) {
+        title = `Clue: ${squareDirection}`;
+      } else {
+        this.toggleDirection();
+        title = this.getTitle();
+      }
     }
 
     return title;

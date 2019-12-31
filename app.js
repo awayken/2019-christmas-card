@@ -107,7 +107,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
   puzzle.buildGrid(clues, 23, 23);
 });
-
-// Section transition
-
-// When we show the puzzle div, we need to pass in the squares
