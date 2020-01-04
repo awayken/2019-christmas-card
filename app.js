@@ -106,4 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   puzzle.buildGrid(clues, 23, 23);
+
+  const startButton = document.querySelector('#start');
+  if (startButton) {
+    startButton.addEventListener('click', () => {
+      puzzle.activateGrid();
+    });
+  }
 });

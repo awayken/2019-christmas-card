@@ -59,6 +59,7 @@ class XwordGrid extends LitElement {
         -webkit-appearance: none;
         appearance: none;
         box-sizing: border-box;
+        caret-color: var(--secondary-background, #fff);
         font-size: var(--base-size, 100%);
         line-height: 1.85;
         margin: 0;
@@ -78,13 +79,22 @@ class XwordGrid extends LitElement {
       }
 
       .clue__box--active {
-        /* Color all the clue boxes in this active clue */
-        background: hsl(40, 100%, 75%);
+        --bg-color: hsl(40, 100%, 75%);
+        background: var(--bg-color);
+        caret-color: var(--bg-color);
       }
 
       .clue__box--focus {
-        /* Color the active clue box specifically */
-        background: hsl(220, 100%, 75%);
+        --bg-color: hsl(220, 100%, 75%);
+        background: var(--bg-color);
+        caret-color: var(--bg-color);
+      }
+
+      .clue__box--invalid,
+      .clue__box:invalid {
+        --bg-color: hsl(10, 100%, 75%);
+        background: var(--bg-color);
+        caret-color: var(--bg-color);
       }
     `;
   }
@@ -158,12 +168,20 @@ class XwordGrid extends LitElement {
           gridHtml = html`
             ${gridHtml}
             <input
+              autocomplete="off"
               class="${className}"
               @click="${() => {
                 this.setActiveSquare(j, i);
               }}"
-              @keyup="${this.setValue}"
+              @input="${e => {
+                this.setValue({
+                  key: e.data,
+                });
+
+                e.target.value = '';
+              }}"
               maxlength="1"
+              pattern="^[a-zA-Z]$"
               tabindex="-1"
               .value="${gridItem.value || ''}"
             />
