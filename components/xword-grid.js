@@ -116,6 +116,15 @@ class XwordGrid extends LitElement {
     `;
   }
 
+  updated(changedProperties) {
+    if (changedProperties.has('activeSquare')) {
+      const activeSquare = this.shadowRoot.querySelector('.clue__box--focus');
+      if (activeSquare) {
+        activeSquare.focus();
+      }
+    }
+  }
+
   blurGrid() {
     this.dispatchEvent(
       new CustomEvent('setActiveSquare', {
@@ -148,17 +157,16 @@ class XwordGrid extends LitElement {
 
           gridHtml = html`
             ${gridHtml}
-            <span
-              @blur="${this.blurGrid}"
+            <input
               class="${className}"
               @click="${() => {
                 this.setActiveSquare(j, i);
               }}"
               @keyup="${this.setValue}"
+              maxlength="1"
               tabindex="-1"
-            >
-              ${gridItem.value || ''}
-            </span>
+              .value="${gridItem.value || ''}"
+            />
           `;
         } else {
           gridHtml = html`
