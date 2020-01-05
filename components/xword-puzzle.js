@@ -67,12 +67,6 @@ class XwordPuzzle extends LitElement {
         ?isWinner="${this.isWinner}"
         grid="${JSON.stringify(this.grid)}"
         width="${this.gridWidth}"
-        @moveNext="${() => {
-          this.setNextSquare();
-        }}"
-        @movePrevious="${() => {
-          this.setPrevSquare();
-        }}"
         @setValue="${this.setValue}"
         @setActiveSquare="${this.setActiveSquare}"
         @toggleDirection="${this.toggleDirection}"
@@ -140,11 +134,7 @@ class XwordPuzzle extends LitElement {
     this.activeSquare = activeSquare;
   }
 
-  setPrevSquare() {
-    return this.setNextSquare(-1);
-  }
-
-  setNextSquare(moveBy = 1) {
+  setNextSquare() {
     const [x, y] = this.activeSquare;
     let nextActive = [x, y];
 
@@ -152,7 +142,7 @@ class XwordPuzzle extends LitElement {
     let switchDirection = false;
     let triedEverything = false;
 
-    const totalTries = this.gridHeight * this.gridWidth;
+    const totalTries = this.gridHeight * this.gridWidth * 2;
     let tries = 1;
 
     let newX = x;
@@ -160,32 +150,23 @@ class XwordPuzzle extends LitElement {
 
     while (!foundNextSquare && !triedEverything && tries <= totalTries) {
       if (this.direction === ClueDirection.Across) {
-        newX += moveBy;
+        newX += 1;
       } else {
-        newY += moveBy;
+        newY += 1;
       }
 
       if (newX >= this.gridWidth) {
         newX = 0;
-        newY += moveBy;
-      }
-
-      if (newX < 0) {
-        newX = this.gridWidth - 1;
-        newY += moveBy;
+        newY += 1;
       }
 
       if (newY >= this.gridHeight) {
-        newX += moveBy;
+        newX += 1;
         newY = 0;
       }
 
-      if (newY < 0) {
-        newX += moveBy;
-        newY = this.gridHeight - 1;
-      }
-
       const trySquare = this.getSquare(newX, newY);
+
       if (trySquare && trySquare[this.direction] && trySquare.value === '') {
         nextActive = [newX, newY];
         foundNextSquare = true;
@@ -225,22 +206,20 @@ class XwordPuzzle extends LitElement {
       // move back and delete that square
     }
 
-    // If we have an value
-    if (value.length) {
-      square.isValid = this.checkValue(x, y);
+    // Check the square validity
+    square.isValid = this.checkValue(x, y);
 
-      // Find next square and check for empties
-      const hasNoEmptySquares = this.setNextSquare();
+    // Find next square and check for empties
+    const hasNoEmptySquares = this.setNextSquare();
 
-      // If our puzzle is filled
-      if (hasNoEmptySquares) {
-        // Check puzzle validity
-        const isValid = this.checkValues();
+    // If our puzzle is filled
+    if (hasNoEmptySquares) {
+      // Check puzzle validity
+      const isValid = this.checkValues();
 
-        // Declare a winner
-        if (isValid) {
-          this.isWinner = true;
-        }
+      // Declare a winner
+      if (isValid) {
+        this.isWinner = true;
       }
     }
   }

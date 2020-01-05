@@ -254,14 +254,6 @@ class XwordGrid extends LitElement {
       );
     }
 
-    if (code === 'ArrowRight' || code === 'ArrowDown') {
-      this.dispatchEvent(new CustomEvent('moveNext'));
-    }
-
-    if (code === 'ArrowLeft' || code === 'ArrowUp') {
-      this.dispatchEvent(new CustomEvent('movePrevious'));
-    }
-
     if (code === 'Space') {
       this.dispatchEvent(new CustomEvent('toggleDirection'));
     }
