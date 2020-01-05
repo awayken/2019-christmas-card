@@ -90,6 +90,16 @@ body {
   font-family: var(--base-font);
 }
 
+h1 {
+  font-size: 1.8rem;
+  font-weight: normal;
+  letter-spacing: .5ch;
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: pre-line;
+}
+
 xword-puzzle {
   text-align: center;
 }

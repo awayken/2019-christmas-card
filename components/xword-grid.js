@@ -102,6 +102,7 @@ class XwordGrid extends LitElement {
   constructor() {
     super();
 
+    this.activeSquare = [];
     this.grid = [];
     this.isWinner = false;
   }

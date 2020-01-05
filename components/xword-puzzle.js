@@ -281,45 +281,6 @@ class XwordPuzzle extends LitElement {
       this.direction === ClueDirection.Across ? ClueDirection.Down : ClueDirection.Across;
   }
 
-  buildGrid(clues, width, height) {
-    const grid = [];
-    const gridAnswers = [];
-
-    for (const clue of clues) {
-      const answerSize = clue.answer.length;
-      const { column, row } = clue.start;
-
-      let x = column;
-      let y = row;
-
-      for (let i = 0; i < answerSize; i += 1) {
-        if (!grid[y]) {
-          grid[y] = [];
-          gridAnswers[y] = [];
-        }
-
-        if (!grid[y][x]) {
-          grid[y][x] = { isValid: true, value: '' };
-          gridAnswers[y][x] = clue.answer.charAt(i);
-        }
-
-        grid[y][x][clue.direction] = clue.question;
-        grid[y][x][`${clue.direction}id`] = clue.id;
-
-        if (clue.direction === ClueDirection.Across) {
-          x += 1;
-        } else {
-          y += 1;
-        }
-      }
-    }
-
-    this.grid = grid;
-    this.gridAnswers = gridAnswers;
-    this.gridHeight = height;
-    this.gridWidth = width;
-  }
-
   activateGrid() {
     this.activeSquare = [0, 0];
     const firstSquare = this.getSquare(0, 0);

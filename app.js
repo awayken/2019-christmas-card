@@ -1,9 +1,25 @@
 import Clue, { ClueDirection } from './models/Clue.js';
+import { buildGrid } from './models/Grid.js';
 
 import './components/xword-puzzle.js';
+import './components/xword-grid.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const puzzle = document.querySelector('#puzzle');
+  const logoDetails = buildGrid(
+    [
+      new Clue('the', 'The', 'The', ClueDirection.Across, 1, 0),
+      new Clue('rauschword', 'Rauschword', 'Rauschword', ClueDirection.Across, 0, 1),
+      new Clue('puzzle', 'Puzzle', 'Puzzle', ClueDirection.Across, 3, 2),
+    ],
+    true,
+  );
+
+  const logo = document.querySelector('#logo');
+  if (logo) {
+    logo.grid = logoDetails.grid;
+    logo.activeSquare = [0, 1];
+    logo.direction = ClueDirection.Across;
+  }
 
   const clues = [
     new Clue('1', `Remy's favorite toy`, `Jumperoo`, ClueDirection.Across, 14, 0),
@@ -105,7 +121,15 @@ document.addEventListener('DOMContentLoaded', () => {
     new Clue('22', `Family movie night`, `Saturday`, ClueDirection.Down, 16, 15),
   ];
 
-  puzzle.buildGrid(clues, 23, 23);
+  const gridDetails = buildGrid(clues);
+
+  const puzzle = document.querySelector('#puzzle');
+  if (puzzle) {
+    puzzle.gridHeight = 23;
+    puzzle.gridWidth = 23;
+    puzzle.grid = gridDetails.grid;
+    puzzle.gridAnswers = gridDetails.gridAnswers;
+  }
 
   const startButton = document.querySelector('#start');
   if (startButton) {
