@@ -12,5 +12,5 @@ module.exports = merge(config, {
   output: {
     path: path.resolve(__dirname, 'public'),
   },
-  plugins: [new CopyWebpackPlugin(['app.css'])],
+  plugins: [new CopyWebpackPlugin(['assets/**/*'])],
 });
