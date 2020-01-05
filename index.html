@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <title>The Rauschword Puzzle - 2019 Christmas Card</title>
-  <meta name="Description" content="Can you solve our Rauschword puzzles?">
+  <meta name="Description" content="Can you solve our Rauschword puzzle?">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
-  <meta name="theme-color" content="#16161d">
+  <meta name="theme-color" content="#000000">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta http-equiv="x-ua-compatible" content="IE=Edge">
 
@@ -25,11 +25,17 @@
   </header>
 
   <main>
-    <section id="intro-section" class="section">
-      This is the intro.
+    <article id="intro-section" class="section section--chubby">
+      <p>Welcome to our 2019 Christmas Card: The Rauschword Puzzle!</p>
 
-      <button id="start">Start the Puzzle</button>
-    </section>
+      <p>We've taken some key facts about our year and built them into an interactive crossword puzzle. 2019 was quite a year for us. I'd tell you about it, but that would give you an edge on the puzzle. You won't trick me, cheater!</p>
+
+      <p>The <strong>Blue</strong> square is your active square. The <strong>Yellow</strong> squares are your active clue. Fill in all the <strong>White</strong> squares to complete the puzzle.</p>
+
+      <p>If you have a keyboarded device, like a laptop or desktop computer, you can use the <strong>Arrow Keys</strong> to move your active square, the <strong>Delete Key</strong> to empty a square, and the <strong>Spacebar</strong> to switch directions.</p>
+
+      <button class="btn btn--solo" id="start">Start the Puzzle</button>
+    </article>
 
     <section id="puzzle-section" class="section">
       <xword-puzzle id="puzzle">Loading the puzzle&hellip;</xword-puzzle>
