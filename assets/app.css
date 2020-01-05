@@ -131,29 +131,9 @@ article {
   transition: opacity 330ms ease-in-out;
 }
 
-.btn {
-  appearance: none;
-  -webkit-appearance: none;
-  background: var(--bg-color, #fff);
-  border: 2px solid #000;
-  border-radius: 0.35em;
-  display: inline-block;
-  font-size: 125%;
-  letter-spacing: .5ch;
-  text-transform: uppercase;
-}
-
-.btn:hover,
-.btn:focus {
-  --bg-color: hsl(40, 100%, 75%);
-}
-
-.btn:active {
-  --bg-color: hsl(220, 100%, 75%);
-}
-
 .btn--solo {
   display: block;
+  font-size: 120%;
   margin: 1em auto;
   width: fit-content;
 }

@@ -1,8 +1,9 @@
 import Clue, { ClueDirection } from './models/Clue.js';
 import { buildGrid } from './models/Grid.js';
 
-import './components/xword-puzzle.js';
+import './components/xword-button.js';
 import './components/xword-grid.js';
+import './components/xword-puzzle.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const logoDetails = buildGrid(

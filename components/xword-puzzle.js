@@ -1,6 +1,7 @@
 import { LitElement, css, html } from 'lit-element';
 
 import './xword-grid.js';
+import './xword-modal.js';
 
 import { ClueDirection } from '../models/Clue.js';
 
@@ -13,6 +14,7 @@ class XwordPuzzle extends LitElement {
       gridHeight: { type: Number },
       gridWidth: { type: Number },
       isWinner: { type: Boolean },
+      showFinishedModal: { type: Boolean },
     };
   }
 
@@ -57,10 +59,11 @@ class XwordPuzzle extends LitElement {
   }
 
   render() {
-    let title = this.getTitle();
+    const title = this.getTitle();
 
-    if (this.isWinner) {
-      title = 'You solved the puzzle!';
+    let modal = null;
+    if (this.showFinishedModal) {
+      modal = this.getFinishedModal();
     }
 
     return html`
@@ -78,6 +81,7 @@ class XwordPuzzle extends LitElement {
       >
         Loading the grid...
       </xword-grid>
+      ${modal}
     `;
   }
 
@@ -221,6 +225,7 @@ class XwordPuzzle extends LitElement {
     if (hasNoEmptySquares) {
       // Check puzzle validity
       const isValid = this.checkValues();
+      this.showFinishedModal = true;
 
       // Declare a winner
       if (isValid) {
@@ -270,10 +275,36 @@ class XwordPuzzle extends LitElement {
 
   activateGrid() {
     this.activeSquare = [0, 0];
+
     const firstSquare = this.getSquare(0, 0);
+
     if (!firstSquare) {
       this.setNextSquare();
     }
+  }
+
+  getFinishedModal() {
+    if (this.isWinner) {
+      return html`
+        <xword-modal @close="${this.hideFinishedModal}">
+          <p><strong>You solved the puzzle! Congratulations!</strong></p>
+          <p>You can close this window and look over your glorious answers. Thanks for playing!</p>
+        </xword-modal>
+      `;
+    }
+
+    return html`
+      <xword-modal @close="${this.hideFinishedModal}">
+        <p>
+          <strong>You <em>almost</em> solved the puzzle.</strong>
+        </p>
+        <p>Close this window and keep trying!</p>
+      </xword-modal>
+    `;
+  }
+
+  hideFinishedModal() {
+    this.showFinishedModal = false;
   }
 }
 
