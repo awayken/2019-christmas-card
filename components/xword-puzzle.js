@@ -29,11 +29,16 @@ class XwordPuzzle extends LitElement {
       }
 
       .puzzle__title {
-        background: #cfd9dfee;
-        top: 0;
+        background: hsla(220, 35%, 75%, 95%);
+        border: 2px solid hsl(220, 50%, 50%);
+        border-radius: 0.35em;
+        margin-left: auto;
+        margin-right: auto;
         padding: 0.5em;
         position: -webkit-sticky;
         position: sticky;
+        top: 1em;
+        width: 80%;
         z-index: 10;
       }
     `;
@@ -87,7 +92,7 @@ class XwordPuzzle extends LitElement {
   }
 
   getTitle() {
-    let title = 'Select a square to start playing.';
+    let title = 'The active clues will display here. Select a square to start playing.';
     const [x, y] = this.activeSquare;
     const square = this.getSquare(x, y);
 
