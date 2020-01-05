@@ -79,22 +79,16 @@ class XwordGrid extends LitElement {
       }
 
       .clue__box--active {
-        --bg-color: hsl(40, 100%, 75%);
-        background: var(--bg-color);
-        caret-color: var(--bg-color);
+        --secondary-background: hsl(40, 100%, 75%);
       }
 
       .clue__box--focus {
-        --bg-color: hsl(220, 100%, 75%);
-        background: var(--bg-color);
-        caret-color: var(--bg-color);
+        --secondary-background: hsl(220, 100%, 75%);
       }
 
       .clue__box--invalid,
       .clue__box:invalid {
-        --bg-color: hsl(10, 100%, 75%);
-        background: var(--bg-color);
-        caret-color: var(--bg-color);
+        --primary-background: hsl(0, 100%, 50%);
       }
     `;
   }
@@ -158,6 +152,10 @@ class XwordGrid extends LitElement {
         if (gridItem) {
           let className = 'clue__box';
 
+          if (!gridItem.isValid) {
+            className += ' clue__box--invalid';
+          }
+
           if (this.isActiveClue(gridItem)) {
             className += ' clue__box--active';
           }
@@ -171,7 +169,8 @@ class XwordGrid extends LitElement {
             <input
               autocomplete="off"
               class="${className}"
-              @click="${() => {
+              @click="${e => {
+                e.target.select();
                 this.setActiveSquare(j, i);
               }}"
               @input="${e => {
@@ -184,7 +183,6 @@ class XwordGrid extends LitElement {
               @keyup="${e => {
                 this.handleKey(e);
               }}"
-              maxlength="1"
               pattern="^[a-zA-Z]$"
               tabindex="-1"
               .value="${gridItem.value || ''}"

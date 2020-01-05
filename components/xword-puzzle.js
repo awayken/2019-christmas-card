@@ -218,6 +218,7 @@ class XwordPuzzle extends LitElement {
 
     // Set square's value
     square.value = value;
+    square.isValid = true;
 
     // If our square was empty and we send another empty
     if (!value.length && !oldValue.length) {
@@ -226,6 +227,8 @@ class XwordPuzzle extends LitElement {
 
     // If we have an value
     if (value.length) {
+      square.isValid = this.checkValue(x, y);
+
       // Find next square and check for empties
       const hasNoEmptySquares = this.setNextSquare();
 
