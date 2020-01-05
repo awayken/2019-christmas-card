@@ -67,8 +67,15 @@ class XwordPuzzle extends LitElement {
         ?isWinner="${this.isWinner}"
         grid="${JSON.stringify(this.grid)}"
         width="${this.gridWidth}"
+        @moveNext="${() => {
+          this.setNextSquare();
+        }}"
+        @movePrevious="${() => {
+          this.setPrevSquare();
+        }}"
         @setValue="${this.setValue}"
         @setActiveSquare="${this.setActiveSquare}"
+        @toggleDirection="${this.toggleDirection}"
       >
         Loading the grid...
       </xword-grid>
@@ -133,7 +140,11 @@ class XwordPuzzle extends LitElement {
     this.activeSquare = activeSquare;
   }
 
-  setNextSquare() {
+  setPrevSquare() {
+    return this.setNextSquare(-1);
+  }
+
+  setNextSquare(moveBy = 1) {
     const [x, y] = this.activeSquare;
     let nextActive = [x, y];
 
@@ -141,24 +152,37 @@ class XwordPuzzle extends LitElement {
     let switchDirection = false;
     let triedEverything = false;
 
+    const totalTries = this.gridHeight * this.gridWidth;
+    let tries = 1;
+
     let newX = x;
     let newY = y;
 
-    while (!foundNextSquare && !triedEverything) {
+    while (!foundNextSquare && !triedEverything && tries <= totalTries) {
       if (this.direction === ClueDirection.Across) {
-        newX += 1;
+        newX += moveBy;
       } else {
-        newY += 1;
+        newY += moveBy;
       }
 
       if (newX >= this.gridWidth) {
         newX = 0;
-        newY += 1;
+        newY += moveBy;
+      }
+
+      if (newX < 0) {
+        newX = this.gridWidth - 1;
+        newY += moveBy;
       }
 
       if (newY >= this.gridHeight) {
-        newX += 1;
+        newX += moveBy;
         newY = 0;
+      }
+
+      if (newY < 0) {
+        newX += moveBy;
+        newY = this.gridHeight - 1;
       }
 
       const trySquare = this.getSquare(newX, newY);
@@ -177,6 +201,8 @@ class XwordPuzzle extends LitElement {
 
         this.toggleDirection();
       }
+
+      tries += 1;
     }
 
     this.activeSquare = nextActive;
@@ -188,31 +214,55 @@ class XwordPuzzle extends LitElement {
     const { value } = event.detail;
     const [x, y] = this.activeSquare;
     const square = this.getSquare(x, y);
+    const oldValue = square.value;
 
+    // Set square's value
     square.value = value;
 
-    const hasNoEmptySquares = this.setNextSquare();
+    // If our square was empty and we send another empty
+    if (!value.length && !oldValue.length) {
+      // move back and delete that square
+    }
 
-    if (hasNoEmptySquares) {
-      const isValid = this.checkValues();
-      if (isValid) {
-        this.isWinner = true;
+    // If we have an value
+    if (value.length) {
+      // Find next square and check for empties
+      const hasNoEmptySquares = this.setNextSquare();
+
+      // If our puzzle is filled
+      if (hasNoEmptySquares) {
+        // Check puzzle validity
+        const isValid = this.checkValues();
+
+        // Declare a winner
+        if (isValid) {
+          this.isWinner = true;
+        }
       }
     }
+  }
+
+  checkValue(x, y) {
+    const square = this.getSquare(x, y);
+    const answer = this.getSquare(x, y, this.gridAnswers);
+
+    if (square) {
+      const squareValid = square.value.toLowerCase() === answer.toLowerCase();
+      square.isValid = squareValid;
+
+      return squareValid;
+    }
+
+    return true;
   }
 
   checkValues() {
     for (let y = 0; y < this.gridHeight; y += 1) {
       for (let x = 0; x < this.gridWidth; x += 1) {
-        const square = this.getSquare(x, y);
-        const answer = this.getSquare(x, y, this.gridAnswers);
+        const squareValid = this.checkValue(x, y);
 
-        if (square) {
-          const squareValid = square.value.toLowerCase() === answer.toLowerCase();
-
-          if (!squareValid) {
-            return false;
-          }
+        if (!squareValid) {
+          return false;
         }
       }
     }
@@ -249,7 +299,7 @@ class XwordPuzzle extends LitElement {
         }
 
         if (!grid[y][x]) {
-          grid[y][x] = { value: '' };
+          grid[y][x] = { isValid: true, value: '' };
           gridAnswers[y][x] = clue.answer.charAt(i);
         }
 

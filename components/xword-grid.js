@@ -4,7 +4,7 @@ class XwordGrid extends LitElement {
   static get properties() {
     return {
       activeSquare: { type: Array },
-      direction: { type: String },
+      direction: { type: String, reflect: false },
       grid: { type: Array },
       height: { type: Number },
       isWinner: { type: Boolean },
@@ -180,6 +180,9 @@ class XwordGrid extends LitElement {
 
                 e.target.value = '';
               }}"
+              @keyup="${e => {
+                this.handleKey(e);
+              }}"
               maxlength="1"
               pattern="^[a-zA-Z]$"
               tabindex="-1"
@@ -236,6 +239,32 @@ class XwordGrid extends LitElement {
           },
         }),
       );
+    }
+  }
+
+  handleKey(event) {
+    const { code } = event;
+
+    if (code === 'Backspace') {
+      this.dispatchEvent(
+        new CustomEvent('setValue', {
+          detail: {
+            value: '',
+          },
+        }),
+      );
+    }
+
+    if (code === 'ArrowRight' || code === 'ArrowDown') {
+      this.dispatchEvent(new CustomEvent('moveNext'));
+    }
+
+    if (code === 'ArrowLeft' || code === 'ArrowUp') {
+      this.dispatchEvent(new CustomEvent('movePrevious'));
+    }
+
+    if (code === 'Space') {
+      this.dispatchEvent(new CustomEvent('toggleDirection'));
     }
   }
 }
