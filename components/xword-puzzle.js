@@ -42,6 +42,12 @@ class XwordPuzzle extends LitElement {
         width: 80%;
         z-index: 10;
       }
+
+      .puzzle__image {
+        display: block;
+        margin: 0 auto 1em;
+        max-width: 100%;
+      }
     `;
   }
 
@@ -292,6 +298,11 @@ class XwordPuzzle extends LitElement {
     if (this.isWinner) {
       return html`
         <xword-modal @close="${this.hideFinishedModal}">
+          <img
+            class="puzzle__image"
+            src="/assets/the-family.jpg"
+            alt="Our smiling family, elated that you solved it"
+          />
           <p><strong>You solved the puzzle! Congratulations!</strong></p>
           <p>You can close this window and look over your glorious answers. Thanks for playing!</p>
         </xword-modal>
