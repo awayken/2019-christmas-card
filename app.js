@@ -5,6 +5,12 @@ import './components/xword-button.js';
 import './components/xword-grid.js';
 import './components/xword-puzzle.js';
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js');
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const logoDetails = buildGrid(
     [
