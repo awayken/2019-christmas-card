@@ -13,7 +13,7 @@ class XwordModal extends LitElement {
     return css`
       :host {
         align-items: center;
-        background: rgba(0, 0, 0, 0.95);
+        background: rgba(0, 0, 0, 0.9);
         bottom: 0;
         display: flex;
         left: 0;
