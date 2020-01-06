@@ -178,9 +178,6 @@ class XwordGrid extends LitElement {
 
                 e.target.value = '';
               }}"
-              @keyup="${e => {
-                this.handleKey(e);
-              }}"
               pattern="^[a-zA-Z]$"
               tabindex="-1"
               .value="${gridItem.value || ''}"
@@ -236,24 +233,6 @@ class XwordGrid extends LitElement {
           },
         }),
       );
-    }
-  }
-
-  handleKey(event) {
-    const { code } = event;
-
-    if (code === 'Backspace') {
-      this.dispatchEvent(
-        new CustomEvent('setValue', {
-          detail: {
-            value: '',
-          },
-        }),
-      );
-    }
-
-    if (code === 'Space') {
-      this.dispatchEvent(new CustomEvent('toggleDirection'));
     }
   }
 }
