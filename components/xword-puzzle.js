@@ -30,9 +30,8 @@ class XwordPuzzle extends LitElement {
         overflow: auto;
       }
 
-      .puzzle__title {
-        background: hsla(220, 35%, 75%, 95%);
-        border: 2px solid hsl(220, 50%, 50%);
+      .puzzle__question {
+        background: #da9127;
         border-radius: 0.35em;
         margin-left: auto;
         margin-right: auto;
@@ -66,14 +65,20 @@ class XwordPuzzle extends LitElement {
       modal = this.getFinishedModal();
     }
 
+    let gridColor = '#885a23';
+    if (this.isWinner) {
+      gridColor = 'green';
+    }
+
     return html`
-      <div class="puzzle__title">${title}</div>
+      <div class="puzzle__question">${title}</div>
       <xword-grid
         activeSquare="${JSON.stringify(this.activeSquare)}"
         direction="${this.direction}"
+        grid="${JSON.stringify(this.grid)}"
         height="${this.gridHeight}"
         ?isWinner="${this.isWinner}"
-        grid="${JSON.stringify(this.grid)}"
+        style="--primary-background: ${gridColor}"
         width="${this.gridWidth}"
         @setValue="${this.setValue}"
         @setActiveSquare="${this.setActiveSquare}"

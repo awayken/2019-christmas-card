@@ -109,9 +109,7 @@ class XwordGrid extends LitElement {
     }
 
     const styles = `
-      --columns: ${this.width}; --rows: ${this.height}; --primary-background: ${
-      this.isWinner ? 'green' : 'black'
-    };
+      --columns: ${this.width}; --rows: ${this.height};
     `;
 
     return html`
