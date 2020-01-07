@@ -30,9 +30,8 @@ class XwordPuzzle extends LitElement {
         overflow: auto;
       }
 
-      .puzzle__title {
-        background: hsla(220, 35%, 75%, 95%);
-        border: 2px solid hsl(220, 50%, 50%);
+      .puzzle__question {
+        background: #da9127;
         border-radius: 0.35em;
         margin-left: auto;
         margin-right: auto;
@@ -42,6 +41,12 @@ class XwordPuzzle extends LitElement {
         top: 1em;
         width: 80%;
         z-index: 10;
+      }
+
+      .puzzle__image {
+        display: block;
+        margin: 0 auto 1em;
+        max-width: 100%;
       }
     `;
   }
@@ -66,14 +71,20 @@ class XwordPuzzle extends LitElement {
       modal = this.getFinishedModal();
     }
 
+    let gridColor = '#885a23';
+    if (this.isWinner) {
+      gridColor = 'green';
+    }
+
     return html`
-      <div class="puzzle__title">${title}</div>
+      <div class="puzzle__question">${title}</div>
       <xword-grid
         activeSquare="${JSON.stringify(this.activeSquare)}"
         direction="${this.direction}"
+        grid="${JSON.stringify(this.grid)}"
         height="${this.gridHeight}"
         ?isWinner="${this.isWinner}"
-        grid="${JSON.stringify(this.grid)}"
+        style="--primary-background: ${gridColor}"
         width="${this.gridWidth}"
         @setValue="${this.setValue}"
         @setActiveSquare="${this.setActiveSquare}"
@@ -287,6 +298,11 @@ class XwordPuzzle extends LitElement {
     if (this.isWinner) {
       return html`
         <xword-modal @close="${this.hideFinishedModal}">
+          <img
+            class="puzzle__image"
+            src="/assets/the-family.jpg"
+            alt="Our smiling family, elated that you solved it"
+          />
           <p><strong>You solved the puzzle! Congratulations!</strong></p>
           <p>You can close this window and look over your glorious answers. Thanks for playing!</p>
         </xword-modal>

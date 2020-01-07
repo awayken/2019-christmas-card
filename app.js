@@ -29,10 +29,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const clues = [
-    new Clue('1', `Remy's favorite athletic activity`, `Jumping`, ClueDirection.Across, 14, 0),
+    new Clue(
+      '1',
+      `Remy's favorite activity, shared with frogs and kangaroos`,
+      `Jumping`,
+      ClueDirection.Across,
+      14,
+      0,
+    ),
     new Clue(
       '4',
-      `2019 was Holli's ____ year at New Tech High School`,
+      `Holli is currently in her ____ year at New Tech High School`,
       `eighth`,
       ClueDirection.Across,
       2,
@@ -50,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ),
     new Clue(
       '11',
-      `Unusual obstacle that chipped Ainsley's tooth`,
+      `Unusual obstacle that chipped Ainsley's tooth while biking`,
       `Garbagecan`,
       ClueDirection.Across,
       6,
@@ -83,7 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
     ),
     new Clue('19', `Ian's grade level`, `Third`, ClueDirection.Across, 0, 14),
     new Clue('21', `Longest running family member?`, `Miles`, ClueDirection.Across, 12, 15),
-    new Clue('23', `Teething side effect`, `Drool`, ClueDirection.Across, 4, 16),
+    new Clue(
+      '23',
+      `Eight months of this sometimes results in a first tooth`,
+      `Drool`,
+      ClueDirection.Across,
+      4,
+      16,
+    ),
     new Clue('24', `Oldest brother`, `Ian`, ClueDirection.Across, 11, 17),
     new Clue(
       '25',
@@ -94,18 +108,40 @@ document.addEventListener('DOMContentLoaded', () => {
       17,
     ),
     new Clue('26', `Middlest sister`, `Ainsley`, ClueDirection.Across, 16, 21),
+    new Clue(
+      '27',
+      `Surgerical procedure that Remy underwent to help with chronic ear infections`,
+      `Tubes`,
+      ClueDirection.Across,
+      5,
+      20,
+    ),
 
     new Clue(
       '2',
-      `Balloonesque ocean life that decorates Remy's daycare`,
+      `Balloonesque ocean life that decorates Remy's daycare room`,
       `Pufferfish`,
       ClueDirection.Down,
       17,
       0,
     ),
     new Clue('3', `Ainsley's grade level`, `First`, ClueDirection.Down, 3, 2),
-    new Clue('5', `Holiday that had Remy sleeping over`, `Thanksgiving`, ClueDirection.Down, 6, 3),
-    new Clue('6', `Family member most fond of Christmas?`, `Holli`, ClueDirection.Down, 11, 3),
+    new Clue(
+      '5',
+      `Holiday that had Remy sleeping overnight for the first time`,
+      `Thanksgiving`,
+      ClueDirection.Down,
+      6,
+      3,
+    ),
+    new Clue(
+      '6',
+      `Family member with the most "Joi" at Christmas?`,
+      `Holli`,
+      ClueDirection.Down,
+      11,
+      3,
+    ),
     new Clue(
       '8',
       `Piece of furniture good for rocking and sleeping on during maternity leave`,
@@ -127,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new Clue('20', `Gives Ainsley a new outlook on things?`, `Glasses`, ClueDirection.Down, 8, 15),
     new Clue(
       '22',
-      `Day of the week that's alright for fighting and Family Movie Night`,
+      `Day of the week that's good for Rausch Family Movie Night and Night Fevers`,
       `Saturday`,
       ClueDirection.Down,
       16,
