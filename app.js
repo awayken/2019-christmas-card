@@ -8,7 +8,7 @@ import './components/xword-puzzle.js';
 document.addEventListener('DOMContentLoaded', () => {
   const logoDetails = buildGrid(
     [
-      new Clue('the', 'The', 'The', ClueDirection.Across, 1, 0),
+      new Clue('the', 'The', 'Tha', ClueDirection.Across, 1, 0),
       new Clue('rauschword', 'Rauschword', 'Rauschword', ClueDirection.Across, 0, 1),
       new Clue('puzzle', 'Puzzle', 'Puzzle', ClueDirection.Across, 3, 2),
     ],
@@ -17,7 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const logo = document.querySelector('#logo');
   if (logo) {
+    logoDetails.grid[0][3].isValid = false;
+
     logo.grid = logoDetails.grid;
+
     logo.activeSquare = [0, 1];
     logo.direction = ClueDirection.Across;
   }

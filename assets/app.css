@@ -1,4 +1,5 @@
 /** # Reset: https://hankchizljaw.com/wrote/a-modern-css-reset/ **/
+
 /* Box sizing rules */
 *,
 *::before,
@@ -102,16 +103,11 @@ h1 {
   white-space: pre-line;
 }
 
-xword-puzzle {
-  text-align: center;
-}
-
 article {
   max-width: 52em;
 }
 
 .section {
-  display: block;
   margin-left: auto;
   margin-right: auto;
 }
@@ -120,22 +116,25 @@ article {
   padding: 1em;
 }
 
-.section--hidden {
-  display: none;
-  opacity: 0;
-}
-
-.section--fadein {
-  display: block;
-  opacity: 1;
-  transition: opacity 330ms ease-in-out;
-}
-
 .btn--solo {
   display: block;
   font-size: 120%;
   margin: 1em auto;
   width: fit-content;
+}
+
+xword-puzzle {
+  text-align: center;
+}
+
+a:link,
+a:visited {
+  color: currentColor;
+}
+
+a:hover,
+a:active {
+  text-decoration: none;
 }
 
 footer {
