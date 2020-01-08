@@ -1,4 +1,5 @@
 /** # Reset: https://hankchizljaw.com/wrote/a-modern-css-reset/ **/
+
 /* Box sizing rules */
 *,
 *::before,
@@ -107,24 +108,12 @@ article {
 }
 
 .section {
-  display: block;
   margin-left: auto;
   margin-right: auto;
 }
 
 .section--chubby {
   padding: 1em;
-}
-
-.section--hidden {
-  display: none;
-  opacity: 0;
-}
-
-.section--fadein {
-  display: block;
-  opacity: 1;
-  transition: opacity 330ms ease-in-out;
 }
 
 .btn--solo {
