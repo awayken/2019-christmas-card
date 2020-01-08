@@ -102,10 +102,6 @@ h1 {
   white-space: pre-line;
 }
 
-xword-puzzle {
-  text-align: center;
-}
-
 article {
   max-width: 52em;
 }
@@ -136,6 +132,20 @@ article {
   font-size: 120%;
   margin: 1em auto;
   width: fit-content;
+}
+
+xword-puzzle {
+  text-align: center;
+}
+
+a:link,
+a:visited {
+  color: currentColor;
+}
+
+a:hover,
+a:active {
+  text-decoration: none;
 }
 
 footer {
